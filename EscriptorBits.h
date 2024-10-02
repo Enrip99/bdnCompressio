@@ -4,20 +4,22 @@
 #include <fstream>
 #include <string.h>
 #include <iostream>
-#include <bitset>
 
-//#define numBits 32768
-#define numBits 20
+//#define numBytes 4094
+#define numBytes 3
+#define numBits ( numBytes * 8 )
+#define bytesPadding 2
+#define midaArray ( numBytes + bytesPadding )
 
 class EscriptorBits{
     private:
-        std::bitset<numBits> llistaEscriure;
-        unsigned int comptadorBit;
+        __uint8_t llistaEscriure[midaArray];
+        __uint16_t comptadorBit;
         std::ofstream sortida;
 
-    public :
+    public:
         //Constructora, sortida és un nom de fitxer
-        EscriptorBits(std::string sortida);
+        EscriptorBits(std::string fitxer);
 
         //Escriu el bit al fitxer
         void escriuBit(bool bit);
