@@ -27,7 +27,14 @@ void acabaEscriure(){
     out.close();
 }
 
-int main(){
+int main(int argc, char *argv[]){
+    
+    /*
+    if (argc != 3){
+        std::cout << "Us: " << argv[0] << " <input> <output>" << std::endl;
+        return 1;
+    }
+    */
 
     std::string input;
     while (std::cin >> input){
