@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <string.h>
 #include "EscriptorBits.h"
 
@@ -11,7 +10,7 @@ int main(int argc, char *argv[]){
         return 1;
     }
     */
-   EscriptorBits escriptor("sortida.bdn");
+    EscriptorBits escriptor("sortida.bdn");
 
     std::string input;
     while (std::cin >> input){

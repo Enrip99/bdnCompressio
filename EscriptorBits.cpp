@@ -3,7 +3,7 @@
 EscriptorBits::EscriptorBits(std::string fitxer){
     byteActual = 0;
     comptadorBit = 0;
-    sortida.open( fitxer , std::ios::out | std::ios::trunc | std::ios::binary);
+    sortida.open(fitxer , std::ios::out | std::ios::trunc | std::ios::binary);
 };
 
 void EscriptorBits::escriuBit(bool bit){
