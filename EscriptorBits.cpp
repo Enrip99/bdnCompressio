@@ -1,22 +1,26 @@
 #include "EscriptorBits.h"
 
 EscriptorBits::EscriptorBits(std::string fitxer){
-    byteActual = 0;
-    comptadorBit = 0;
+    llistaEscriure.reset();
+    comptadorBit = numBits;
     sortida.open(fitxer , std::ios::out | std::ios::trunc | std::ios::binary);
 };
 
 void EscriptorBits::escriuBit(bool bit){
-    byteActual <<= 1;
-    if (bit) ++byteActual;
-    ++comptadorBit;
-    if (!(comptadorBit % numBits)){
-        sortida << byteActual;
-    }
-    
+    llistaEscriure[--comptadorBit] = bit;
+    if (!comptadorBit){
+        unsigned int tempNumBits = numBits;
+        sortida.write(reinterpret_cast<char*>(&tempNumBits), sizeof(tempNumBits));
+
+        comptadorBit = numBits;
+        llistaEscriure.reset();
+    }    
 };
 
 void EscriptorBits::acabaEscriure(){
+
+    /*
+
     if (comptadorBit % numBits){
         while (comptadorBit % numBits){
             byteActual <<= 1;
@@ -24,6 +28,7 @@ void EscriptorBits::acabaEscriure(){
         }
         sortida << byteActual;
     }
+    */
     sortida.close();
 
 };

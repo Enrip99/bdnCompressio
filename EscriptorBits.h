@@ -4,12 +4,15 @@
 #include <fstream>
 #include <string.h>
 #include <iostream>
+#include <bitset>
+
+//#define numBits 32768
+#define numBits 20
 
 class EscriptorBits{
     private:
-        __uint8_t byteActual;
-        const int numBits = sizeof(byteActual) * __CHAR_BIT__;
-        unsigned char comptadorBit;
+        std::bitset<numBits> llistaEscriure;
+        unsigned int comptadorBit;
         std::ofstream sortida;
 
     public :
