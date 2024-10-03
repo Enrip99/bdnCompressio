@@ -4,9 +4,10 @@
 
 int main(){
     LectorBits lector("sortida.bdn");
-    unsigned char llegit;
-    while (llegit = lector.llegeixBit() != -1){
-        std::cout << llegit;
+    char llegit;
+    while (llegit = lector.llegeixBit(), llegit != -1){
+        if (llegit) std::cout << "a";
+        else std::cout << "b";
     }
     std::cout << std::endl;
 }

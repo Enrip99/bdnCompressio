@@ -1,8 +1,8 @@
 #ifndef LECTORBITS_H
 #define LECTORBITS_H
 
-#include <fstream>
-#include <string.h>
+#include <stdio.h>
+#include <string>
 #include "DimensionsIO.h"
 
 class LectorBits{
@@ -10,7 +10,7 @@ class LectorBits{
         __uint8_t llistaLectura[midaArray];
         __uint16_t comptadorBit;
         __uint16_t limitBloc;
-        std::ifstream entrada;
+        FILE * entrada;
 
     public:
         //Constructora, entrada és un nom de fitxer

@@ -2,9 +2,10 @@
 
 EscriptorBits::EscriptorBits(std::string fitxer){
     comptadorBit = 0;
-    sortida.open(fitxer , std::ios::out | std::ios::trunc | std::ios::binary);
+    sortida = fopen (fitxer.c_str(), "w");
     llistaEscriure[0] = (__uint8_t) (numBits >> 8);
     llistaEscriure[1] = (__uint8_t) (numBits & 0x00FF);
+    for (int i = bytesPadding; i < midaArray; ++i) llistaEscriure[i] = 0;
     //Els dos primers elements de l'array són la quantitat de bits/bloc.
     //Només hi haurà menys de numBits bits menor a l'ultim bloc, ho deixem ja així.
     //Seria més eficient ficar només un 0, indicant que venen numBits bits seguits
@@ -16,13 +17,11 @@ void EscriptorBits::escriuBit(bool bit){
     //Activa el bit indicat en cas de ser 1.
     //Els dos primers bytes es reserven per la mida del bloc.
     //bit << (7 - (comptadorBit%8)) permet accedir primer als bits de més pes.
-
     ++comptadorBit;
 
     if (comptadorBit == numBits){
         //Escriure a disc en cas d'exhaurir el límit de bits/bloc.
-
-        sortida.write(reinterpret_cast<char*>(llistaEscriure), midaArray);
+        fwrite(llistaEscriure, sizeof(__uint8_t), midaArray, sortida);
         comptadorBit = 0;
         for (int i = bytesPadding; i < midaArray; ++i) llistaEscriure[i] = 0;
         //Reiniciem el bloc sencer a 0.
@@ -42,8 +41,8 @@ void EscriptorBits::acabaEscriure(){
         //escriure 00
     }
 
-    sortida.write(reinterpret_cast<char*>(llistaEscriure), bytesPadding + ((comptadorBit + 8 - 1) / 8) );
+    fwrite(llistaEscriure, sizeof(__uint8_t), bytesPadding + ((comptadorBit + 8 - 1) / 8), sortida);
     //Escrivim el que queda al búfer
     //(A + B - 1)/B -> ceiling(A/B)
-    sortida.close();
+    fclose(sortida);
 };

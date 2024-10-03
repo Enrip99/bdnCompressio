@@ -1,29 +1,25 @@
 #include "LectorBits.h"
-#include <iostream>
 
 LectorBits::LectorBits(std::string fitxer){
     comptadorBit = 0;
-    entrada.open(fitxer, std::ios::in | std::ios::binary);
-    entrada.read(reinterpret_cast<char*>(llistaLectura), midaArray);
+    entrada = fopen (fitxer.c_str(), "r");
+    fread(llistaLectura, sizeof(__uint8_t), midaArray, entrada);
     limitBloc = (llistaLectura[0] << 8) | (llistaLectura[1]);
-
-    for (int i = 0; i < midaArray; ++i) std::cout << llistaLectura[i];
-
 };
 
 signed char LectorBits::llegeixBit(){
     if (comptadorBit == limitBloc){
         if (comptadorBit == numBits){
             comptadorBit = 0;
-            entrada.read(reinterpret_cast<char*>(llistaLectura), midaArray);
+            fread(llistaLectura, sizeof(__uint8_t), midaArray, entrada);
             limitBloc = (llistaLectura[0] << 8) | (llistaLectura[1]);
             if (limitBloc == 0){
-                entrada.close();
+                fclose(entrada);
                 return -1;
             }
         }
         else{
-            entrada.close();
+            fclose(entrada);
             return -1;
         }
     }
