@@ -12,7 +12,7 @@ EscriptorBits::EscriptorBits(std::string fitxer){
 };
 
 void EscriptorBits::escriuBit(bool bit){
-    if (bit) llistaEscriure[comptadorBit/8 + bytesPadding] = (__uint8_t) bit << (7 - (comptadorBit%8));
+    if (bit) llistaEscriure[comptadorBit/8 + bytesPadding] |= (__uint8_t) bit << (7 - (comptadorBit%8));
     //Activa el bit indicat en cas de ser 1.
     //Els dos primers bytes es reserven per la mida del bloc.
     //bit << (7 - (comptadorBit%8)) permet accedir primer als bits de més pes.
@@ -20,8 +20,9 @@ void EscriptorBits::escriuBit(bool bit){
     ++comptadorBit;
 
     if (comptadorBit == numBits){
+        //Escriure a disc en cas d'exhaurir el límit de bits/bloc.
+
         sortida.write(reinterpret_cast<char*>(llistaEscriure), midaArray);
-        //Escribir a disc en cas d'exhaurir el límit de bits/bloc.
         comptadorBit = 0;
         for (int i = bytesPadding; i < midaArray; ++i) llistaEscriure[i] = 0;
         //Reiniciem el bloc sencer a 0.
@@ -30,17 +31,14 @@ void EscriptorBits::escriuBit(bool bit){
 };
 
 void EscriptorBits::acabaEscriure(){
+    if (comptadorBit){
+        llistaEscriure[0] = (__uint8_t) (comptadorBit >> 8);
+        llistaEscriure[1] = (__uint8_t) (comptadorBit & 0x00FF);
+        //Escrivim el nombre de bits al bloc final
 
-    /*
-
-    if (comptadorBit % numBits){
-        while (comptadorBit % numBits){
-            byteActual <<= 1;
-            ++comptadorBit;
-        }
-        sortida << byteActual;
+        sortida.write(reinterpret_cast<char*>(llistaEscriure), bytesPadding + ((comptadorBit + 8 - 1) / 8) );
+        //En cas de quedar bits sense escriure a disc abans de tancar, els escrivim
+        //(A + B - 1)/B -> ceiling(A/B)
     }
-    */
     sortida.close();
-
 };

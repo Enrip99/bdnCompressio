@@ -3,10 +3,8 @@
 
 #include <fstream>
 #include <string.h>
-#include <iostream>
 
-//#define numBytes 4094
-#define numBytes 3
+#define numBytes 4094
 #define numBits ( numBytes * 8 )
 #define bytesPadding 2
 #define midaArray ( numBytes + bytesPadding )
