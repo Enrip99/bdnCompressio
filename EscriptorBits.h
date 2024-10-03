@@ -11,8 +11,6 @@ class EscriptorBits{
         __uint16_t comptadorBit;
         FILE * sortida;
 
-        void escriuDisc(size_t mida);
-
     public:
         //Constructora, sortida és un nom de fitxer
         EscriptorBits(std::string fitxer);
