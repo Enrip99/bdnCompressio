@@ -1,19 +1,15 @@
 #ifndef ESCRIPTORBITS_H
 #define ESCRIPTORBITS_H
 
-#include <fstream>
-#include <string.h>
-
-#define numBytes 4094
-#define numBits ( numBytes * 8 )
-#define bytesPadding 2
-#define midaArray ( numBytes + bytesPadding )
+#include <stdio.h>
+#include <string>
+#include "DimensionsIO.h"
 
 class EscriptorBits{
     private:
         __uint8_t llistaEscriure[midaArray];
         __uint16_t comptadorBit;
-        std::ofstream sortida;
+        FILE * sortida;
 
     public:
         //Constructora, sortida és un nom de fitxer

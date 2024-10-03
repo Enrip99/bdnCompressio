@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string.h>
+#include <string>
 #include "EscriptorBits.h"
 
 int main(int argc, char *argv[]){
