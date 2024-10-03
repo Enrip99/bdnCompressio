@@ -35,10 +35,15 @@ void EscriptorBits::acabaEscriure(){
         llistaEscriure[0] = (__uint8_t) (comptadorBit >> 8);
         llistaEscriure[1] = (__uint8_t) (comptadorBit & 0x00FF);
         //Escrivim el nombre de bits al bloc final
-
-        sortida.write(reinterpret_cast<char*>(llistaEscriure), bytesPadding + ((comptadorBit + 8 - 1) / 8) );
-        //En cas de quedar bits sense escriure a disc abans de tancar, els escrivim
-        //(A + B - 1)/B -> ceiling(A/B)
     }
+    else{
+        llistaEscriure[0] = (__uint8_t) 0x00;
+        llistaEscriure[1] = (__uint8_t) 0x00;
+        //escriure 00
+    }
+
+    sortida.write(reinterpret_cast<char*>(llistaEscriure), bytesPadding + ((comptadorBit + 8 - 1) / 8) );
+    //Escrivim el que queda al búfer
+    //(A + B - 1)/B -> ceiling(A/B)
     sortida.close();
 };

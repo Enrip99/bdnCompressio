@@ -3,11 +3,7 @@
 
 #include <fstream>
 #include <string.h>
-
-#define numBytes 4094
-#define numBits ( numBytes * 8 )
-#define bytesPadding 2
-#define midaArray ( numBytes + bytesPadding )
+#include "DimensionsIO.h"
 
 class EscriptorBits{
     private:
