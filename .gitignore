@@ -33,3 +33,6 @@
 
 *.bdn
 /.vscode
+
+CompressorNormal
+CompressorAdaptatiu
