@@ -1,4 +1,4 @@
-#include "EscriptorBits.h"
+#include "EscriptorBits.hpp"
 
 EscriptorBits::EscriptorBits(std::string fitxer){
     comptadorBit = 0;

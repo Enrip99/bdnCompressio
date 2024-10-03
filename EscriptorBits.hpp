@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <string>
-#include "DimensionsIO.h"
+#include "DimensionsIO.hpp"
 
 class EscriptorBits{
     private:

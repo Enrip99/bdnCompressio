@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "EscriptorBits.h"
+#include "EscriptorBits.hpp"
 
 int main(int argc, char *argv[]){
     

@@ -1,6 +1,6 @@
 #include <iostream>
-#include <string.h>
-#include "LectorBits.h"
+#include <string>
+#include "LectorBits.hpp"
 
 int main(){
     LectorBits lector("sortida.bdn");

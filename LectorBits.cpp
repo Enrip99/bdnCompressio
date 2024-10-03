@@ -1,4 +1,4 @@
-#include "LectorBits.h"
+#include "LectorBits.hpp"
 
 LectorBits::LectorBits(std::string fitxer){
     comptadorBit = 0;
