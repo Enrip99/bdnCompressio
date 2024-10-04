@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
+#include <stdio.h>
 #include "EscriptorBits.hpp"
+
+#define midaBuffer 4096
+#define bytesDiferents 256
 
 int main(int argc, char *argv[]){
     
@@ -10,6 +14,25 @@ int main(int argc, char *argv[]){
         return 1;
     }
     */
+    unsigned long long int llistatOcurrencies[bytesDiferents];
+
+    FILE * entrada;
+    entrada = fopen(argv[1], "r");
+    __uint8_t bufferLectura[midaBuffer];
+    int bytesLlegits;
+    while ((!std::feof(entrada)) && (bytesLlegits = fread(bufferLectura, sizeof(__uint8_t), midaBuffer, entrada))){
+        for (int i = 0; i < bytesLlegits; ++i){
+            ++llistatOcurrencies[bufferLectura[i]];
+        }
+    }
+
+    for (int i = 0; i < bytesDiferents; ++i){
+        //if (llistatOcurrencies[i]) std::cout << (char) i << " - " << llistatOcurrencies[i] << std::endl;
+        
+    }
+
+
+   /*
     EscriptorBits escriptor("sortida.bdn");
 
     std::string input;
@@ -19,6 +42,7 @@ int main(int argc, char *argv[]){
         }
     }
     escriptor.acabaEscriure();
+    */
     
     return 0;
 }
