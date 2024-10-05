@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
         return 1;
     }
     */
-    unsigned long long int llistatOcurrencies[bytesDiferents];
+    unsigned long long int llistatOcurrencies[bytesDiferents] = {0};
 
     FILE * entrada;
     entrada = fopen(argv[1], "r");
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
     }
 
     for (int i = 0; i < bytesDiferents; ++i){
-        //if (llistatOcurrencies[i]) std::cout << (char) i << " - " << llistatOcurrencies[i] << std::endl;
+        if (llistatOcurrencies[i]) std::cout << (char) i << " - " << llistatOcurrencies[i] << std::endl;
         
     }
 
