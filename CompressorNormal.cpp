@@ -26,23 +26,31 @@ int main(int argc, char *argv[]){
         }
     }
 
+    //Construir arbre
+
+
+
+
+    //Llegir un altre cop el fitxer i comprimir-ho
+    /*
+    std::fseek(entrada, 0, SEEK_SET);
+    std::clearerr(entrada);
+    EscriptorBits escriptor(argv[2]);
+    while ((!std::feof(entrada)) && (bytesLlegits = fread(bufferLectura, sizeof(__uint8_t), midaBuffer, entrada))){
+        for (int i = 0; i < bytesLlegits; ++i){
+            //write bits
+        }
+    }
+    escriptor.acabaEscriure();
+    std::fclose(entrada);
+    */
+
+/*
     for (int i = 0; i < bytesDiferents; ++i){
         if (llistatOcurrencies[i]) std::cout << (char) i << " - " << llistatOcurrencies[i] << std::endl;
         
     }
-
-
-   /*
-    EscriptorBits escriptor("sortida.bdn");
-
-    std::string input;
-    while (std::cin >> input){
-        for (int i = 0; i < input.length(); ++i){
-            escriptor.escriuBit(input[i] != '0');
-        }
-    }
-    escriptor.acabaEscriure();
-    */
+*/
     
     return 0;
 }
