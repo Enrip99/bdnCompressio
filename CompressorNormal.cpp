@@ -7,7 +7,6 @@
 #include "DimensionsIO.hpp"
 #include "BinTree.hpp"
 
-#define midaBuffer 4096
 
 void escriuArbre(const BinTree<__uint8_t> & arbre, EscriptorBits & sortida)
 {

@@ -72,5 +72,11 @@ public:
         return p->x;
     }
 
+    // Tells if two tree objects point towards the same node.
+    bool equals (const BinTree compare){
+        assert(not empty() && not compare.empty());
+        return p == compare.p;
+    } 
+
 };
 #endif

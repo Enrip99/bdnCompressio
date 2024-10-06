@@ -6,5 +6,6 @@
 #define bytesPadding 2
 #define midaArray ( numBytes + bytesPadding )
 #define bytesDiferents 256
+#define midaBuffer 4096
 
 #endif
