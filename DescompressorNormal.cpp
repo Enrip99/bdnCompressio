@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdio.h>
 #include "LectorBits.hpp"
 #include "DimensionsIO.hpp"
 #include "BinTree.hpp"
@@ -30,53 +31,88 @@ void llegeixArbre(BinTree<__uint8_t>& arbre, LectorBits & lector){
     else errorLectura();
 }
 
-void write_bintree_int(const BinTree<__uint8_t> &a)
-{
-        if (not a.empty()) {
-                int x = a.value();
-                write_bintree_int(a.left());
-                std::cout << " " << x;
-                write_bintree_int(a.right());
-  }
-}
-
-
-
 int main(int argc, char *argv[]){
 
     if (argc != 3){
         std::cout << "Us: " << argv[0] << " <input> <output>" << std::endl;
         return 1;
     }
+    
 
     LectorBits lector(argv[1]);
     char llegit;
+    //Objecte per llegir el fixter comprimit a disc
+
     BinTree<__uint8_t> arbreHuffman, arbreRecorrer;
+    //Objectes d'arbre que farem servir per descomprimir el fitxer i un d'auxiliar.
+
+    FILE * sortida = fopen(argv[2], "w");
+    __uint8_t bufferEscriptura[midaBuffer] = {0};
+    int bytesAEscriure;
+    //Obrim fitxer per escriure, segon argument de la linia de comanda.
+    //Variables per assistir a l'escriptura a baix nivell.
 
 
-
-    //construir arbre
+    //Llegir arbre de disc
+    //
+    //Llegim l'arbre en inordre. Un 0 significa baixar per la branca esquerra.
+    //Un 1 significa la presència d'una fulla. Després de cada 1 venen 8 bits representant
+    //el byte que codifiquen. Després de cada fulla, es retrocedeix al node pare i es
+    //continua per la branca dreta, sense cap bit que ho indiqui (recodem que en un arbre de
+    //Huffman, tots el nodes tenen 0 o 2 branques, mai 1).
+    //
+    //      arrel
+    //       / \
+    //      -   -
+    //     / \ / \
+    //     A B C -
+    //          / \
+    //          D E
+    //
+    //Es representaria com 0 0 1(A) 1(B) 0 1(C) 0 1(D) 1(E)
+    //Si el lector retorna un -1 en cap moment (EOF), interpretem que el fitxer s'ha
+    //corrompit i avortem.
 
     llegeixArbre(arbreHuffman, lector);
 
 
+    //Descomprimim la resta del fitxer.
+    //
+    //Creem una còpia de l'arbre de Huffman, i comencem a baixar per esquerra o dreta
+    //si llegim un 0 o un 1, respectivament. Quan trobem una fulla, escrivim el seu valor
+    //i tornem a començar des de dalt. Terminem quan el lector ens avisa d'EOF.
+    //Per escriure a disc, cada cop que trobem per fi midaBuffer bytes; o quan acabem,
+    //els escrivim alhora.
+
     arbreRecorrer = BinTree<__uint8_t> (arbreHuffman);
-    //write_bintree_int(arbreRecorrer);
+    bytesAEscriure = 0;
     while(llegit = lector.llegeixBit(), llegit != -1){
         if (llegit == 0){
-            //esquerra
             arbreRecorrer = arbreRecorrer.left();
         }
         else{
-            //dreta
             arbreRecorrer = arbreRecorrer.right();
         }
+        
         if (arbreRecorrer.left().empty()){
-            std::cout << arbreRecorrer.value();
+            bufferEscriptura[bytesAEscriure++] = arbreRecorrer.value();
+            if (bytesAEscriure == midaBuffer){
+                fwrite(bufferEscriptura, sizeof(__uint8_t), bytesAEscriure, sortida);
+                bytesAEscriure = 0;
+                for (int i = 0; i < midaBuffer; ++i) bufferEscriptura[i] = 0;
+            }
             arbreRecorrer = BinTree<__uint8_t> (arbreHuffman);
         }
     }
 
+    if (bytesAEscriure) std::fwrite(bufferEscriptura, sizeof(__uint8_t), bytesAEscriure, sortida);
+    std::fclose(sortida);
 
+    if (! arbreHuffman.equals(arbreRecorrer)){
+        perror("S'ha arribat al final del fitxer sense descomprimir totes les dades.\n \
+        El fitxer comprimit es podria haver corromput.");
+        exit(1);
+    }
 
+    return 0;
 }
