@@ -12,24 +12,7 @@ EscriptorBits::EscriptorBits(std::string fitxer){
     //i només ficar un 1 seguit del nombre d'elements restants. Però me la bufa.
 };
 
-void EscriptorBits::escriuBit(bool bit){
-    if (bit) llistaEscriure[comptadorBit/8 + bytesPadding] |= (__uint8_t) bit << (7 - (comptadorBit%8));
-    //Activa el bit indicat en cas de ser 1.
-    //Els dos primers bytes es reserven per la mida del bloc.
-    //bit << (7 - (comptadorBit%8)) permet accedir primer als bits de més pes.
-    ++comptadorBit;
-
-    if (comptadorBit == numBits){
-        //Escriure a disc en cas d'exhaurir el límit de bits/bloc.
-        fwrite(llistaEscriure, sizeof(__uint8_t), midaArray, sortida);
-        comptadorBit = 0;
-        for (int i = bytesPadding; i < midaArray; ++i) llistaEscriure[i] = 0;
-        //Reiniciem el bloc sencer a 0.
-        //Els dos primer bytes es deixen iguals, només seràn diferens l'ultim bloc.
-    }    
-};
-
-void EscriptorBits::acabaEscriure(){
+EscriptorBits::~EscriptorBits(){
     if (comptadorBit){
         llistaEscriure[0] = (__uint8_t) (comptadorBit >> 8);
         llistaEscriure[1] = (__uint8_t) (comptadorBit & 0x00FF);
@@ -45,4 +28,22 @@ void EscriptorBits::acabaEscriure(){
     //Escrivim el que queda al búfer
     //(A + B - 1)/B -> ceiling(A/B)
     fclose(sortida);
+
+}
+
+void EscriptorBits::escriuBit(bool bit){
+    if (bit) llistaEscriure[comptadorBit/8 + bytesPadding] |= (__uint8_t) bit << (7 - (comptadorBit%8));
+    //Activa el bit indicat en cas de ser 1.
+    //Els dos primers bytes es reserven per la mida del bloc.
+    //bit << (7 - (comptadorBit%8)) permet accedir primer als bits de més pes.
+    ++comptadorBit;
+
+    if (comptadorBit == numBits){
+        //Escriure a disc en cas d'exhaurir el límit de bits/bloc.
+        fwrite(llistaEscriure, sizeof(__uint8_t), midaArray, sortida);
+        comptadorBit = 0;
+        for (int i = bytesPadding; i < midaArray; ++i) llistaEscriure[i] = 0;
+        //Reiniciem el bloc sencer a 0.
+        //Els dos primer bytes es deixen iguals, només seràn diferens l'ultim bloc.
+    }    
 };
