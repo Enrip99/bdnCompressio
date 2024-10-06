@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 #include <stdio.h>
 #include "EscriptorBits.hpp"
 #include "DimensionsIO.hpp"
@@ -28,13 +29,31 @@ void escriuArbre(const BinTree<__uint8_t> & arbre, EscriptorBits & sortida)
     }
 }
 
+void creaBufferIntern(const BinTree<__uint8_t> & arbre, std::map<__uint8_t, std::vector<bool> > & cacheArbre, std::vector<bool> & codificacio){
+    if (arbre.left().empty()){
+        cacheArbre[arbre.value()] = codificacio;
+    }
+    else{
+        codificacio.push_back(false);
+        creaBufferIntern(arbre.left(), cacheArbre, codificacio);
+        codificacio.back() = true;
+        creaBufferIntern(arbre.right(), cacheArbre, codificacio);
+        codificacio.pop_back();
+    }
+}
+
+void creaBuffer(const BinTree<__uint8_t> & arbre, std::map<__uint8_t, std::vector<bool> > & cacheArbre){
+    std::vector<bool> tempCodificacio;
+    creaBufferIntern(arbre, cacheArbre, tempCodificacio);
+}
+
 int main(int argc, char *argv[]){
-    /*
+    
     if (argc != 3){
         std::cout << "Us: " << argv[0] << " <input> <output>" << std::endl;
         return 1;
     }
-    */
+    
 
     unsigned long long int llistatOcurrencies[bytesDiferents] = {0};
     //Per a cada byte 0x00 - 0xFF, comptador de quants cops surt.
@@ -57,6 +76,8 @@ int main(int argc, char *argv[]){
     EscriptorBits escriptor(argv[2]);
     //Objecte per escriure l'arbre i fixter comprimit a disc
 
+    std::map<__uint8_t, std::vector<bool> > cacheArbre;
+    //Mapa amb els bits que corresponen a cada byte per poder comprimir sense recòrrer l'arbre.
 
 
     //Llistat amb les freqüències de cada byte.
@@ -69,8 +90,6 @@ int main(int argc, char *argv[]){
             ++llistatOcurrencies[bufferLectura[i]];
         }
     }
-
-
     //Construir arbre.
     //
     //Per cada element no zero al llistat de freqüències es crea un element d'un multimap.
@@ -113,29 +132,45 @@ int main(int argc, char *argv[]){
     //continua per la branca dreta, sense cap bit que ho indiqui (recodem que en un arbre de
     //Huffman, tots el nodes tenen 0 o 2 branques, mai 1).
     //
-    //       arrel
-    //       /  \
-    //      -    -
-    //     / \  / \
-    //     A B  C -
-    //           / \
-    //           D E
+    //      arrel
+    //       / \
+    //      -   -
+    //     / \ / \
+    //     A B C -
+    //          / \
+    //          D E
     //
     //Es representaria com 0 0 1(A) 1(B) 0 1(C) 0 1(D) 1(E)
 
     escriuArbre(ArbreHuffman, escriptor);
 
 
-    //Llegir un altre cop el fitxer i comprimir-ho
+    //Llegir un altre cop el fitxer i comprimir-ho.
+    //
+    //Primer creem un "buffer" a un mapa per poder accedir més ràpidament a la codificació de cada element sense
+    //recorrer l'arbre sencer cada cop cercant per l'element.
+    //Cada element del mapa conté un vector<bool> corresponent a la seva codificació.
+    //Per l'exemple anterior:
+    //  cacheArbre['A'] == vector<bool> {0,0}
+    //  cacheArbre['B'] == vector<bool> {0,1}
+    //  cacheArbre['C'] == vector<bool> {1,0}
+    //  cacheArbre['D'] == vector<bool> {1,1,0}
+    //  cacheArbre['E'] == vector<bool> {1,1,1}
+
+    creaBuffer(ArbreHuffman, cacheArbre);
+
+    //Tornem a recorrer el fitxer original. Per a cada byte, mirem la seva codificació al búffer, i l'escrivim al fitxer de sortida.
     
     std::fseek(entrada, 0, SEEK_SET);
     std::clearerr(entrada);
     while ((!std::feof(entrada)) && (bytesLlegits = fread(bufferLectura, sizeof(__uint8_t), midaBuffer, entrada))){
         for (int i = 0; i < bytesLlegits; ++i){
-            //write bits
+            for (int j = 0; j < cacheArbre[bufferLectura[i]].size(); ++j){
+                escriptor.escriuBit(cacheArbre[bufferLectura[i]][j]);
+            }
         }
     }
-    escriptor.acabaEscriure();
+    
     std::fclose(entrada);
     
     
