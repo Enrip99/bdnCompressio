@@ -15,11 +15,11 @@ class EscriptorBits{
         //Constructora, sortida és un nom de fitxer
         EscriptorBits(std::string fitxer);
 
+        //Desctructora, fa flush
+        ~EscriptorBits();
+
         //Escriu el bit al fitxer
         void escriuBit(bool bit);
-
-        //Acaba d'omplir el fitxer abans de tancar
-        void acabaEscriure();
 };
 
 #endif

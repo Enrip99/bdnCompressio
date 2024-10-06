@@ -1,26 +1,29 @@
 #ifndef BINTREE_HH
 #define BINTREE_HH
 
+#include <memory>
+#include <cassert>
+
 // A BinTree<T> implements binary trees with values of type T.
 template <typename T>
 class BinTree {
 
     struct Node {
         T x;
-        shared_ptr<Node> left;
-        shared_ptr<Node> right;
+        std::shared_ptr<Node> left;
+        std::shared_ptr<Node> right;
 
-        Node (const T& x, shared_ptr<Node> left, shared_ptr<Node> right)
+        Node (const T& x, std::shared_ptr<Node> left, std::shared_ptr<Node> right)
         :   x(x), left(left), right(right)
         {   }
 
     };
 
     // A tree only holds a node pointer.
-    shared_ptr<Node> p;
+    std::shared_ptr<Node> p;
 
     // Constructs a tree from a node pointer.
-    BinTree (shared_ptr<Node> p)
+    BinTree (std::shared_ptr<Node> p)
     :   p(p)
     {   }
 
@@ -38,12 +41,12 @@ public:
 
     // Constructs a tree with a value x and no subtrees. Θ(1).
     explicit BinTree (const T& x) {
-        p = make_shared<Node>(x, nullptr, nullptr);
+        p = std::make_shared<Node>(x, nullptr, nullptr);
     }
 
     // Constructs a tree with a value x and two subtrees left and right. Θ(1).
     explicit BinTree (const T& x, const BinTree& left, const BinTree& right) {
-        p = make_shared<Node>(x, left.p, right.p);
+        p = std::make_shared<Node>(x, left.p, right.p);
     }
 
     // Tells if this tree is empty. Θ(1).
