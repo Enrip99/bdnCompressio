@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
     
     if (argc != 3){
         std::cout << "Us: " << argv[0] << " <input> <output>" << std::endl;
-        return 1;
+        exit(1);
     }
     
 
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
     //Arbre final.
 
     EscriptorBits escriptor(argv[2]);
-    //Objecte per escriure l'arbre i fixter comprimit a disc
+    //Objecte per escriure l'arbre i fixter comprimit a disc, segon argument de la linia de comanda.
 
     std::map<__uint8_t, std::vector<bool> > cacheArbre;
     //Mapa amb els bits que corresponen a cada byte per poder comprimir sense recòrrer l'arbre.
