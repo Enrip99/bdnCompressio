@@ -76,7 +76,11 @@ public:
     bool equals (const BinTree compare){
         assert(not empty() && not compare.empty());
         return p == compare.p;
-    } 
+    }
+
+    void setValue (T newValue){
+        p->x = newValue;
+    }
 
 };
 #endif
