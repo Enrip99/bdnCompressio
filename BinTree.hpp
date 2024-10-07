@@ -72,14 +72,28 @@ public:
         return p->x;
     }
 
-    // Tells if two tree objects point towards the same node.
+    // Tells if two tree objects point towards the same node. Θ(1).
     bool equals (const BinTree compare){
         assert(not empty() && not compare.empty());
         return p == compare.p;
     }
 
+    // Modifies the tree's value. Θ(1).
     void setValue (T newValue){
         p->x = newValue;
+    }
+
+    // Adds two trees as children. Θ(1).
+    void addChildren (const BinTree& left, const BinTree& right){
+        p->left = left.p;
+        p->right = right.p;
+    }
+
+    
+    void swap (BinTree& objective){
+        std::shared_ptr<Node> aux = p;
+        p = objective.p;
+        objective.p = aux;
     }
 
 };
