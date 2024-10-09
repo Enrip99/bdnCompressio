@@ -20,19 +20,21 @@ void rebalancejaArbre(estructuraArbre & arbre, std::vector<bool> & ultimModifica
         if (ultimModificat[i]) arbre = arbre.right();
         else arbre = arbre.left();
     }
-    cua.push(arbre);
-    while(! cua.empty()){
-        if (cua.front().right().equals(nodeModificat) ){
-            // reiterar per pare????
-        }
-        else if (cua.front().right().value().second < nodeModificat.value().second){
-            // swap; què fer desrpés???
-        }
-        else if (cua.front().left().equals(nodeModificat) ){
-            // reiterar per pare????
-        }
-        else if (cua.front().left().value().second < nodeModificat.value().second){
-            // swap; què fer desrpés???
+    while (!nodeModificat.equals(arbre)){
+        cua.push(arbre);
+        while(! cua.empty()){
+            if (cua.front().right().equals(nodeModificat) ){
+                // reiterar per pare????
+            }
+            else if (cua.front().right().value().second < nodeModificat.value().second){
+                // swap; què fer desrpés???
+            }
+            else if (cua.front().left().equals(nodeModificat) ){
+                // reiterar per pare????
+            }
+            else if (cua.front().left().value().second < nodeModificat.value().second){
+                // swap; què fer desrpés???
+            }
         }
     }
 }
