@@ -20,10 +20,20 @@ void rebalancejaArbre(estructuraArbre & arbre, std::vector<bool> & ultimModifica
         if (ultimModificat[i]) arbre = arbre.right();
         else arbre = arbre.left();
     }
+    
     while (!nodeModificat.equals(arbre)){
         cua.push(arbre);
+
         while(! cua.empty()){
-            if (cua.front().right().equals(nodeModificat) ){
+
+            std::cout << "CINC" << std::endl;
+            std::cout << cua.front().value().second << std::endl;
+            fflush(stdout);
+
+            if (cua.front().right().empty()){
+                
+            }
+            else if (cua.front().right().equals(nodeModificat) ){
                 // reiterar per pare????
             }
             else if (cua.front().right().value().second < nodeModificat.value().second){
@@ -35,6 +45,7 @@ void rebalancejaArbre(estructuraArbre & arbre, std::vector<bool> & ultimModifica
             else if (cua.front().left().value().second < nodeModificat.value().second){
                 // swap; què fer desrpés???
             }
+            cua.pop();
         }
     }
 }
@@ -109,7 +120,7 @@ int main(int argc, char *argv[]){
     std::vector <bool> cacheByteActual;
     //Camí al node de l'ultim byte que hem llegit.
 
-    //FILE * entrada = fopen(argv[1], "r");
+    FILE * entrada = fopen(argv[1], "r");
     __uint8_t bufferLectura[midaBuffer];
     int bytesLlegits;
     //Obrim fitxer a llegir, primer argument de la linia de comanda.
@@ -141,7 +152,7 @@ int main(int argc, char *argv[]){
     //Procès principal
     //
     //Llegim el fitxer d'entrada sencer
-/*
+
     while ((!std::feof(entrada)) && (bytesLlegits = fread(bufferLectura, sizeof(__uint8_t), midaBuffer, entrada))){
         for (int i = 0; i < bytesLlegits; ++i){
 
@@ -187,7 +198,7 @@ int main(int argc, char *argv[]){
             rebalancejaArbre(arbreAdaptatiu, cacheByteActual, cacheNYT, cacheArbre);
         }
     }
-*/
+
     //std::fclose(entrada);
     
     return 0;
