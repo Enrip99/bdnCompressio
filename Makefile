@@ -16,4 +16,4 @@ descompress_adaptatiu: DescompressorAdaptatiu.o LectorBits.o LectorBits.hpp Dime
 	$(CC) -o DescompressorAdaptatiu DescompressorAdaptatiu.o LectorBits.o
 
 clean: 
-	rm -f *.o CompressorNormal DescompressorNormal CompressAdaptatiu DescompressorAdaptatiu
+	rm -f *.o CompressorNormal DescompressorNormal CompressorAdaptatiu DescompressorAdaptatiu
