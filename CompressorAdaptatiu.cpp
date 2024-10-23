@@ -139,11 +139,11 @@ int main(int argc, char *argv[]){
             //Independenment de si és nou o no, mirem si cal reordenar l'arbre.
 
             //rebalancejaArbre(arbreAdaptatiu, cacheByteActual, cacheNYT, cacheArbre);
-            
+
         }
     }
 
-    //std::fclose(entrada);
+    std::fclose(entrada);
     
     return 0;
 
