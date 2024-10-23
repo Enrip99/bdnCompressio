@@ -12,44 +12,6 @@
 #define estructuraArbre BinTree < estructuraParella >
 #define estructuraCache std::map<__uint8_t, std::vector<bool> >
 
-void rebalancejaArbre(estructuraArbre & arbre, std::vector<bool> & ultimModificat, std::vector<bool> & cacheNYT, estructuraCache cacheArbre){
-    std::queue<estructuraArbre> cua;
-    bool modificat = false;
-    estructuraArbre nodeModificat(arbre);
-    for (int i = 0; i < ultimModificat.size(); ++i){
-        if (ultimModificat[i]) arbre = arbre.right();
-        else arbre = arbre.left();
-    }
-    
-    while (!nodeModificat.equals(arbre)){
-        cua.push(arbre);
-
-        while(! cua.empty()){
-
-            std::cout << "CINC" << std::endl;
-            std::cout << cua.front().value().second << std::endl;
-            fflush(stdout);
-
-            if (cua.front().right().empty()){
-                
-            }
-            else if (cua.front().right().equals(nodeModificat) ){
-                // reiterar per pare????
-            }
-            else if (cua.front().right().value().second < nodeModificat.value().second){
-                // swap; què fer desrpés???
-            }
-            else if (cua.front().left().equals(nodeModificat) ){
-                // reiterar per pare????
-            }
-            else if (cua.front().left().value().second < nodeModificat.value().second){
-                // swap; què fer desrpés???
-            }
-            cua.pop();
-        }
-    }
-}
-
 
 void addByteToTree(__uint8_t nouByte, estructuraArbre & arbre, std::vector<bool> & cacheNYT, estructuraCache cacheArbre){
     estructuraArbre arbreAux(arbre);
@@ -130,25 +92,6 @@ int main(int argc, char *argv[]){
     //Objecte per escriure el fixter comprimit a disc.
 
 
-    BinTree<int> un (0, BinTree<int>(1), BinTree<int>(2));
-    BinTree<int> dos (5, BinTree<int>(6), BinTree<int>(7));
-
-    BinTree<int> tres = un.left();
-    BinTree<int> quatre = dos.left();
-
-    std::cout << dos.value() << " - ";
-    //std::cout << tres.value() << " - ";
-
-    tres.swap(quatre);
-
-    std::cout << dos.left().value() << " - ";
-    //std::cout << tres.value() << std::endl;
-
-
-
-    fflush(stdout);
-
-
     //Procès principal
     //
     //Llegim el fitxer d'entrada sencer
@@ -195,7 +138,8 @@ int main(int argc, char *argv[]){
 
             //Independenment de si és nou o no, mirem si cal reordenar l'arbre.
 
-            rebalancejaArbre(arbreAdaptatiu, cacheByteActual, cacheNYT, cacheArbre);
+            //rebalancejaArbre(arbreAdaptatiu, cacheByteActual, cacheNYT, cacheArbre);
+            
         }
     }
 
