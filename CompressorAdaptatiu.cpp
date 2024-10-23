@@ -13,6 +13,21 @@
 #define estructuraCache std::map<__uint8_t, std::vector<bool> >
 
 
+void rebalancejaArbre(estructuraArbre & arrel, std::vector<bool> & camiNode, estructuraCache cacheArbre, std::vector<bool> cacheNYT){
+    bool modificat = false;
+    estructuraArbre nodeModificat(arrel);
+
+    //Trobem el node arbre indicat per camiNode.
+
+    for (int i = 0; i < camiNode.size(); ++i){
+        if (camiNode[i]) nodeModificat = nodeModificat.right();
+        else nodeModificat = nodeModificat.left();
+    }
+
+    
+}
+
+
 void addByteToTree(__uint8_t nouByte, estructuraArbre & arbre, std::vector<bool> & cacheNYT, estructuraCache cacheArbre){
     estructuraArbre arbreAux(arbre);
 
@@ -139,11 +154,11 @@ int main(int argc, char *argv[]){
             //Independenment de si és nou o no, mirem si cal reordenar l'arbre.
 
             //rebalancejaArbre(arbreAdaptatiu, cacheByteActual, cacheNYT, cacheArbre);
-            
+
         }
     }
 
-    //std::fclose(entrada);
+    std::fclose(entrada);
     
     return 0;
 
