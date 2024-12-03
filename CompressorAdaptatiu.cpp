@@ -13,65 +13,6 @@
 #define estructuraCache std::map<__uint8_t, std::vector<bool> >
 
 
-void rebalancejaArbre(estructuraArbre & arrel, std::vector<bool> & camiNode, estructuraCache cacheArbre, std::vector<bool> cacheNYT){
-    bool modificat = false;
-    estructuraArbre nodeModificat(arrel);
-
-    //Trobem el node arbre indicat per camiNode.
-
-    for (int i = 0; i < camiNode.size(); ++i){
-        if (camiNode[i]) nodeModificat = nodeModificat.right();
-        else nodeModificat = nodeModificat.left();
-    }
-
-    
-}
-
-
-void addByteToTree(__uint8_t nouByte, estructuraArbre & arbre, std::vector<bool> & cacheNYT, estructuraCache cacheArbre){
-    estructuraArbre arbreAux(arbre);
-
-    //Trobem el node arbre indicat per cacheNYT.
-
-    for (int i = 0; i < cacheNYT.size(); ++i){
-        if (cacheNYT[i]) arbreAux = arbreAux.right();
-        else arbreAux = arbreAux.left();
-    }
-
-    //Actualitzem el seu valor i afegim com a fills un "nou" NYT i el byte que acabem de trobar.
-
-    arbreAux.setValue(estructuraParella {0,1});
-    arbreAux.addChildren(
-        estructuraArbre (estructuraParella {0,0}),
-        estructuraArbre (estructuraParella {nouByte,1})
-    );
-
-    //Actualitzem les caches.
-
-    cacheArbre[nouByte] = cacheNYT;
-    cacheNYT.push_back(0);
-    cacheArbre[nouByte].push_back(1);
-}
-
-
-void increaseByteOccurrence(estructuraArbre & arbre, std::vector<bool> & camiNode){
-    estructuraParella parellaTemp;
-
-    //Trobem el node arbre indicat per camiNode.
-
-    for (int i = 0; i < camiNode.size(); ++i){
-        if (camiNode[i]) arbre = arbre.right();
-        else arbre = arbre.left();
-    }
-
-    //Incrementem en 1 el seu valor.
-        
-    parellaTemp = arbre.value();
-    ++parellaTemp.second;
-    arbre.setValue(parellaTemp);
-}
-
-
 int main(int argc, char *argv[]){
     
     if (argc != 3){
@@ -111,12 +52,17 @@ int main(int argc, char *argv[]){
     //
     //Llegim el fitxer d'entrada sencer
 
+    estructuraArbre arbreTemporal, fullaIncrementar;
+    bool nouNode;
+
     while ((!std::feof(entrada)) && (bytesLlegits = fread(bufferLectura, sizeof(__uint8_t), midaBuffer, entrada))){
         for (int i = 0; i < bytesLlegits; ++i){
 
             //Mirem si hem enregistrat ja aquest byte abans 
 
             posicio = cacheArbre.find(bufferLectura[i]);
+
+            arbreTemporal = estructuraArbre(arbreAdaptatiu);
 
             if (posicio == cacheArbre.end()){
 
@@ -135,26 +81,62 @@ int main(int argc, char *argv[]){
                 cacheByteActual = cacheNYT;
                 cacheByteActual.push_back(1);
 
-                //Tot seguit, l'afegim a l'arbre penjant d'on era NYT, amb una freqüència de 1.
+                //Obtenim el node a manipular
 
-                addByteToTree(bufferLectura[i], arbreAdaptatiu, cacheNYT, cacheArbre);
+                for (int j = 0; j < cacheNYT.size(); ++j){
+                    if (cacheNYT[j]) arbreTemporal = arbreTemporal.right();
+                    else arbreTemporal = arbreTemporal.left();
+                }
+
+                nouNode = true;
+
             }
             else{
 
                 //Si ja el coneixíem, escrivim a la sortida el camí al seu node.
 
                 cacheByteActual = posicio->second;
-                for (int j = 0; j < cacheByteActual.size(); ++j) escriptor.escriuBit(cacheByteActual[j]);
 
-                //Tot seguit, augmentem la seva freqüència en 1, 
+                for (int j = 0; j < cacheByteActual.size(); ++j){
+                    escriptor.escriuBit(cacheByteActual[j]);
 
-                increaseByteOccurrence(arbreAdaptatiu, posicio->second);
+                    //Obtenim el node a manipular
+
+                    if (cacheByteActual[j]) arbreTemporal = arbreTemporal.right();
+                    else arbreTemporal = arbreTemporal.left();
+                }
+
+                nouNode = false;
+
             }
 
-            //Independenment de si és nou o no, mirem si cal reordenar l'arbre.
+            //Aqui fem el processament de veritat
 
-            //rebalancejaArbre(arbreAdaptatiu, cacheByteActual, cacheNYT, cacheArbre);
+            fullaIncrementar = estructuraArbre();
 
+            if (nouNode){
+                arbreTemporal.addChildren(
+                   estructuraArbre (estructuraParella {0,0}),
+                   estructuraArbre (estructuraParella {bufferLectura[i],0})
+                );
+                fullaIncrementar = arbreTemporal.right();
+            }
+            else {
+                // Swap líder bloc
+
+                //if (nou p == germà de NYT){
+                //  fullaIncrementar = arbreTemporal;
+                //  arbreTemporal = arbreTemporal.parent();
+                //}
+            }
+
+            while(! arbreTemporal.empty()){
+                //Incrementa(arbreTemporal);
+            }
+
+            if (! fullaIncrementar.empty()){
+                //Incrementa(fullaIncrementar);
+            }
         }
     }
 
