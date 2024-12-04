@@ -13,6 +13,33 @@
 #define estructuraCache std::map<__uint8_t, std::vector<bool> >
 
 
+void LliscaIncrementa(estructuraArbre & node){
+    estructuraArbre pareOrig = node.parent();
+
+    if (node.right().empty()){
+        //És fulla; lliscar fins el més alt dels interns de mateixa mida
+        //TO DO
+
+        estructuraParella temp = node.value();
+        ++temp.second;
+        node.setValue(temp);
+
+        node = node.parent();
+    }
+    else{
+        //És intern, lliscar fins la fulla més alta de mida n+1
+        //TO DO
+
+        estructuraParella temp = node.value();
+        ++temp.second;
+        node.setValue(temp);
+
+        node = pareOrig;
+
+    }
+}
+
+
 int main(int argc, char *argv[]){
     
     if (argc != 3){
@@ -30,7 +57,10 @@ int main(int argc, char *argv[]){
     //Mapa amb els bits que corresponen a cada byte per poder comprimir sense recòrrer l'arbre.
 
     std::vector<bool> cacheNYT;
-    //bits que corresponen a NTY. S'emmagatzema fora del map.
+    //Bits que corresponen a NTY. S'emmagatzema fora del map.
+
+    estructuraArbre NYT (arbreAdaptatiu);
+    //Punter a NYT.
 
     std::map<uint_least8_t, std::vector<bool>>::iterator posicio;
     //Iterador per trobarun byte a la caché de l'arbre.
@@ -120,22 +150,24 @@ int main(int argc, char *argv[]){
                    estructuraArbre (estructuraParella {bufferLectura[i],0})
                 );
                 fullaIncrementar = arbreTemporal.right();
+                NYT = arbreTemporal.left();
             }
             else {
-                // Swap líder bloc
+                // TO DO: Swap líder bloc
 
-                //if (nou p == germà de NYT){
-                //  fullaIncrementar = arbreTemporal;
-                //  arbreTemporal = arbreTemporal.parent();
-                //}
+                if (arbreTemporal.parent().left().equals(NYT)){
+                    fullaIncrementar = arbreTemporal;
+                    arbreTemporal = arbreTemporal.parent();
+                }
+                
             }
 
             while(! arbreTemporal.empty()){
-                //Incrementa(arbreTemporal);
+                LliscaIncrementa(arbreTemporal);
             }
 
             if (! fullaIncrementar.empty()){
-                //Incrementa(fullaIncrementar);
+                LliscaIncrementa(fullaIncrementar);
             }
         }
     }
