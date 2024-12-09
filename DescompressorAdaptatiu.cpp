@@ -194,6 +194,9 @@ int main(int argc, char *argv[]){
         }
 
         if (arbreRecorrer.left().empty()){
+
+            fullaIncrementar = estructuraArbre();
+
             if (arbreRecorrer.value().second == 0){
                 // NYT
                 __uint8_t noubyte = llegeigByte(lector);
