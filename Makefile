@@ -1,7 +1,7 @@
 CC=g++
 CXXFLAGS=-std=c++11
 
-all: compress_normal descompress_normal compress_adaptatiu #descompress_adaptatiu
+all: compress_normal descompress_normal compress_adaptatiu descompress_adaptatiu
 
 compress_normal: CompressorNormal.o EscriptorBits.o EscriptorBits.hpp DimensionsIO.hpp BinTree.hpp
 	$(CC) -o CompressorNormal CompressorNormal.o EscriptorBits.o

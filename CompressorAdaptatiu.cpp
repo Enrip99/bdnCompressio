@@ -201,7 +201,6 @@ int main(int argc, char *argv[]){
     //Llegim el fitxer d'entrada sencer
 
     estructuraArbre arbreTemporal, fullaIncrementar;
-    bool nouNode;
 
     while ((!std::feof(entrada)) && (bytesLlegits = fread(bufferLectura, sizeof(__uint8_t), midaBuffer, entrada))){
         for (int i = 0; i < bytesLlegits; ++i){
@@ -277,32 +276,6 @@ int main(int argc, char *argv[]){
             }
 
 
-            /*
-            //Aqui fem el processament de veritat
-            fullaIncrementar = estructuraArbre();
-
-            if (nouNode){
-                arbreTemporal.addChildren(
-                   estructuraArbre (estructuraParella {0,0}),
-                   estructuraArbre (estructuraParella {bufferLectura[i],0})
-                );
-                fullaIncrementar = arbreTemporal.right();
-                NYT = arbreTemporal.left();
-            }
-            else {
-                // Swap líder bloc
-                estructuraArbre lider = getLiderBloc(arbreAdaptatiu, arbreTemporal);
-                if (lider.value().second != 0) lider.swap(arbreTemporal);
-                arbreTemporal = lider;
-
-
-                if (arbreTemporal.parent().left().equals(NYT)){
-                    fullaIncrementar = arbreTemporal;
-                    arbreTemporal = arbreTemporal.parent();
-                }
-                
-            } */
-
             while(! arbreTemporal.empty()){
                 LliscaIncrementa(arbreAdaptatiu, arbreTemporal);
             }
@@ -314,8 +287,26 @@ int main(int argc, char *argv[]){
             if (dirty){
                 recalculaCache(arbreAdaptatiu, cacheArbre, cacheNYT);
             }
+
+            /*
+            for (auto const& x : cacheArbre){
+                std::cout << x.first << ": ";
+                for (auto const& y : x.second){
+                    if (y) std::cout << "1";
+                    else std::cout << "0";
+                }
+                std::cout << std::endl;
+            }
+            std::cout << "NYT: ";
+            for (auto const& x : cacheNYT){
+                if (x) std::cout << "1";
+                else std::cout << "0";
+            }
+            std::cout << std::endl << std::endl;
+            */
         }
     }
+
 
     std::fclose(entrada);
     
