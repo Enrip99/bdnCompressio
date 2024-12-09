@@ -108,9 +108,18 @@ public:
         p = objective.p;
         objective.p = aux;
 
-        aux = p.parent;
-        p->parent = objective.p.parent;
+        aux = p->parent;
+        p->parent = objective.p->parent;
         objective.p->parent = aux;
+
+        if (p->parent){
+            if (p->parent->left == objective.p) p->parent->left = p;
+            else p->parent->right = p;
+        }
+        if (objective.p->parent){
+            if (objective.p->parent->left == p) objective.p->parent->left = objective.p;
+            else objective.p->parent->right = objective.p;
+        }
     }
 
 };

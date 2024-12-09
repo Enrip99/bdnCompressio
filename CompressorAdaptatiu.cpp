@@ -12,13 +12,95 @@
 #define estructuraArbre BinTree < estructuraParella >
 #define estructuraCache std::map<__uint8_t, std::vector<bool> >
 
+bool dirty;
 
-void LliscaIncrementa(estructuraArbre & node){
+estructuraArbre getLiderBloc(estructuraArbre root, estructuraArbre objectiu){
+    std::queue <estructuraArbre> cua;
+    cua.push(root);
+
+    while(!cua.empty()){
+        if(cua.front().equals(objectiu)) {
+            return estructuraArbre(estructuraParella{0,0});
+        }
+        else if (cua.front().value().second == objectiu.value().second && 
+                cua.front().right().empty() == objectiu.right().empty()) {
+            return cua.front();
+        }
+        else if (! cua.front().right().empty()){
+            cua.push(cua.front().right());
+            cua.push(cua.front().left());
+            cua.pop();
+        }
+        else {
+            cua.pop();
+        }
+    }
+    return estructuraArbre(estructuraParella{0,0});
+}
+
+
+estructuraArbre getLiderFullaSuperior(estructuraArbre root, estructuraArbre objectiu){
+    std::queue <estructuraArbre> cua;
+    cua.push(root);
+
+    while(!cua.empty()){
+        if(cua.front().equals(objectiu)) {
+            return estructuraArbre(estructuraParella{0,0});
+        }
+        else if (cua.front().value().second == objectiu.value().second + 1 && 
+                cua.front().right().empty()) {
+            return cua.front();
+        }
+        else if (! cua.front().right().empty()){
+            cua.push(cua.front().right());
+            cua.push(cua.front().left());
+            cua.pop();
+        }
+        else {
+            cua.pop();
+        }
+    }
+    return estructuraArbre(estructuraParella{0,0});
+}
+
+
+estructuraArbre getLiderInteriorIgual(estructuraArbre root, estructuraArbre objectiu){
+    std::queue <estructuraArbre> cua;
+    cua.push(root);
+
+    while(!cua.empty()){
+        if(cua.front().equals(objectiu)) {
+            return estructuraArbre(estructuraParella{0,0});
+        }
+        else if (cua.front().value().second == objectiu.value().second && 
+                ! cua.front().right().empty()) {
+            return cua.front();
+        }
+        else if (! cua.front().right().empty()){
+            cua.push(cua.front().right());
+            cua.push(cua.front().left());
+            cua.pop();
+        }
+        else {
+            cua.pop();
+        }
+    }
+    return estructuraArbre(estructuraParella{0,0});
+}
+
+
+void LliscaIncrementa(estructuraArbre root, estructuraArbre & node){
     estructuraArbre pareOrig = node.parent();
 
     if (node.right().empty()){
         //És fulla; lliscar fins el més alt dels interns de mateixa mida
-        //TO DO
+
+        estructuraArbre lider = getLiderInteriorIgual(root, node);
+        if (lider.value().second != 0) {
+            lider.swap(node);
+            node = lider;
+            dirty = true;
+        }
 
         estructuraParella temp = node.value();
         ++temp.second;
@@ -28,7 +110,13 @@ void LliscaIncrementa(estructuraArbre & node){
     }
     else{
         //És intern, lliscar fins la fulla més alta de mida n+1
-        //TO DO
+        
+        estructuraArbre lider = getLiderFullaSuperior(root, node);
+        if (lider.value().second != 0) {
+            lider.swap(node);
+            node = lider;
+            dirty = true;
+        }
 
         estructuraParella temp = node.value();
         ++temp.second;
@@ -37,6 +125,36 @@ void LliscaIncrementa(estructuraArbre & node){
         node = pareOrig;
 
     }
+}
+
+
+void recalculaCacheIntern(estructuraArbre arbre, estructuraCache & cauArbre, std::vector<bool> & cauNYT, std::vector<bool> cami){
+    if (arbre.right().empty()){
+        //fulla
+        if (arbre.value().second == 0){
+            //NYT
+            cauNYT = cami;
+        }
+        else{
+            //Node normal
+            cauArbre[arbre.value().first] = cami;
+        }
+    }
+    else{
+        //intern
+        cami.push_back(false);
+        recalculaCacheIntern(arbre.left(), cauArbre, cauNYT, cami);
+        cami.back() = true;
+        recalculaCacheIntern(arbre.right(), cauArbre, cauNYT, cami);
+        cami.pop_back();
+    }
+}
+
+
+void recalculaCache(estructuraArbre root, estructuraCache & cauArbre, std::vector<bool> & cauNYT){
+    cauArbre.clear();
+    cauNYT.clear();
+    recalculaCacheIntern(root, cauArbre, cauNYT, std::vector<bool>());
 }
 
 
@@ -87,12 +205,15 @@ int main(int argc, char *argv[]){
 
     while ((!std::feof(entrada)) && (bytesLlegits = fread(bufferLectura, sizeof(__uint8_t), midaBuffer, entrada))){
         for (int i = 0; i < bytesLlegits; ++i){
+            dirty = false;
 
             //Mirem si hem enregistrat ja aquest byte abans 
 
             posicio = cacheArbre.find(bufferLectura[i]);
 
             arbreTemporal = estructuraArbre(arbreAdaptatiu);
+
+            fullaIncrementar = estructuraArbre();
 
             if (posicio == cacheArbre.end()){
 
@@ -108,18 +229,21 @@ int main(int argc, char *argv[]){
                 escriptor.escriuBit(bufferLectura[i] & 0b00000010);
                 escriptor.escriuBit(bufferLectura[i] & 0b00000001);
 
-                cacheByteActual = cacheNYT;
-                cacheByteActual.push_back(1);
-
                 //Obtenim el node a manipular
 
                 for (int j = 0; j < cacheNYT.size(); ++j){
                     if (cacheNYT[j]) arbreTemporal = arbreTemporal.right();
                     else arbreTemporal = arbreTemporal.left();
                 }
+                
+                arbreTemporal.addChildren(
+                   estructuraArbre (estructuraParella {0,0}),
+                   estructuraArbre (estructuraParella {bufferLectura[i],0})
+                );
+                fullaIncrementar = arbreTemporal.right();
+                NYT = arbreTemporal.left();
 
-                nouNode = true;
-
+                dirty = true;
             }
             else{
 
@@ -136,12 +260,25 @@ int main(int argc, char *argv[]){
                     else arbreTemporal = arbreTemporal.left();
                 }
 
-                nouNode = false;
+                // Swap líder bloc
+                estructuraArbre lider = getLiderBloc(arbreAdaptatiu, arbreTemporal);
+                if (lider.value().second != 0) {
+                    lider.swap(arbreTemporal);
+                    arbreTemporal = lider;
+                    dirty = true;
+                }
+
+
+                if (arbreTemporal.parent().left().equals(NYT)){
+                    fullaIncrementar = arbreTemporal;
+                    arbreTemporal = arbreTemporal.parent();
+                }
 
             }
 
-            //Aqui fem el processament de veritat
 
+            /*
+            //Aqui fem el processament de veritat
             fullaIncrementar = estructuraArbre();
 
             if (nouNode){
@@ -153,21 +290,29 @@ int main(int argc, char *argv[]){
                 NYT = arbreTemporal.left();
             }
             else {
-                // TO DO: Swap líder bloc
+                // Swap líder bloc
+                estructuraArbre lider = getLiderBloc(arbreAdaptatiu, arbreTemporal);
+                if (lider.value().second != 0) lider.swap(arbreTemporal);
+                arbreTemporal = lider;
+
 
                 if (arbreTemporal.parent().left().equals(NYT)){
                     fullaIncrementar = arbreTemporal;
                     arbreTemporal = arbreTemporal.parent();
                 }
                 
-            }
+            } */
 
             while(! arbreTemporal.empty()){
-                LliscaIncrementa(arbreTemporal);
+                LliscaIncrementa(arbreAdaptatiu, arbreTemporal);
             }
 
             if (! fullaIncrementar.empty()){
-                LliscaIncrementa(fullaIncrementar);
+                LliscaIncrementa(arbreAdaptatiu, fullaIncrementar);
+            }
+
+            if (dirty){
+                recalculaCache(arbreAdaptatiu, cacheArbre, cacheNYT);
             }
         }
     }
