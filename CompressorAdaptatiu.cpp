@@ -287,26 +287,8 @@ int main(int argc, char *argv[]){
             if (dirty){
                 recalculaCache(arbreAdaptatiu, cacheArbre, cacheNYT);
             }
-
-            /*
-            for (auto const& x : cacheArbre){
-                std::cout << x.first << ": ";
-                for (auto const& y : x.second){
-                    if (y) std::cout << "1";
-                    else std::cout << "0";
-                }
-                std::cout << std::endl;
-            }
-            std::cout << "NYT: ";
-            for (auto const& x : cacheNYT){
-                if (x) std::cout << "1";
-                else std::cout << "0";
-            }
-            std::cout << std::endl << std::endl;
-            */
         }
     }
-
 
     std::fclose(entrada);
     

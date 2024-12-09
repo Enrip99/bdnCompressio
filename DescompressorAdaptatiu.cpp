@@ -252,6 +252,12 @@ int main(int argc, char *argv[]){
     if (bytesAEscriure) std::fwrite(bufferEscriptura, sizeof(__uint8_t), bytesAEscriure, sortida);
     std::fclose(sortida);
 
-    //TO DO: Check si ho hem deixat a mitjan l'arbre
+    if (! arbreAdaptatiu.equals(arbreRecorrer)){
+        perror("S'ha arribat al final del fitxer sense descomprimir totes les dades.\n \
+        El fitxer comprimit es podria haver corromput.");
+        exit(1);
+    }
+
+    return 0;
 
 }
