@@ -35,13 +35,13 @@ int main(int argc, char *argv[]){
 
     if (argc != 3){
         std::cout << "Us: " << argv[0] << " <input> <output>" << std::endl;
-        return 1;
+        exit(1);
     }
     
 
     LectorBits lector(argv[1]);
     char llegit;
-    //Objecte per llegir el fixter comprimit a disc
+    //Objecte per llegir el fixter comprimit a disc, primer argument de la linia de comanda.
 
     BinTree<__uint8_t> arbreHuffman, arbreRecorrer;
     //Objectes d'arbre que farem servir per descomprimir el fitxer i un d'auxiliar.

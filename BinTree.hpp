@@ -12,9 +12,10 @@ class BinTree {
         T x;
         std::shared_ptr<Node> left;
         std::shared_ptr<Node> right;
+        std::shared_ptr<Node> parent;
 
-        Node (const T& x, std::shared_ptr<Node> left, std::shared_ptr<Node> right)
-        :   x(x), left(left), right(right)
+        Node (const T& x, std::shared_ptr<Node> left, std::shared_ptr<Node> right, std::shared_ptr<Node> parent)
+        :   x(x), left(left), right(right), parent(parent)
         {   }
 
     };
@@ -41,12 +42,14 @@ public:
 
     // Constructs a tree with a value x and no subtrees. Θ(1).
     explicit BinTree (const T& x) {
-        p = std::make_shared<Node>(x, nullptr, nullptr);
+        p = std::make_shared<Node>(x, nullptr, nullptr, nullptr);
     }
 
     // Constructs a tree with a value x and two subtrees left and right. Θ(1).
     explicit BinTree (const T& x, const BinTree& left, const BinTree& right) {
-        p = std::make_shared<Node>(x, left.p, right.p);
+        p = std::make_shared<Node>(x, left.p, right.p, nullptr);
+        left.p->parent = p;
+        right.p->parent = p;
     }
 
     // Tells if this tree is empty. Θ(1).
@@ -66,17 +69,58 @@ public:
         return BinTree(p->right);
     }
 
+    // Returns the parent subtree of this tree (cannot be empty). Θ(1).
+    BinTree parent () const {
+        assert(not empty());
+        return BinTree(p->parent);
+    }
+
     // Returns the value of this tree (cannot be empty). Θ(1).
     const T& value () const {
         assert(not empty());
         return p->x;
     }
 
-    // Tells if two tree objects point towards the same node.
+    // Tells if two tree objects point towards the same node. Θ(1).
     bool equals (const BinTree compare){
         assert(not empty() && not compare.empty());
         return p == compare.p;
-    } 
+    }
+
+    // Modifies the tree's value. Θ(1).
+    void setValue (T newValue){
+        p->x = newValue;
+    }
+
+    // Adds two trees as children. Θ(1).
+    void addChildren (const BinTree& left, const BinTree& right){
+        p->left = left.p;
+        left.p->parent = p;
+        p->right = right.p;
+        right.p->parent = p;
+    }
+
+    
+    void swap (BinTree& objective){
+        std::shared_ptr<Node> aux;
+
+        aux = p;
+        p = objective.p;
+        objective.p = aux;
+
+        aux = p->parent;
+        p->parent = objective.p->parent;
+        objective.p->parent = aux;
+
+        if (p->parent){
+            if (p->parent->left == objective.p) p->parent->left = p;
+            else p->parent->right = p;
+        }
+        if (objective.p->parent){
+            if (objective.p->parent->left == p) objective.p->parent->left = objective.p;
+            else objective.p->parent->right = objective.p;
+        }
+    }
 
 };
 #endif
